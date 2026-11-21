@@ -440,6 +440,55 @@ def icon_ship(p, x, y, w, h, c):
                 (cx + dx * r * 0.40 + dy * r * 0.18, cy + dy * r * 0.40 - dx * r * 0.18)], RED)
 
 
+# A coarse world, 64 columns of longitude by 30 of latitude: '#' is land.
+# Enough resolution to be read as the world at map size, no more.
+WORLD = [
+    '           #  # #      #########                 #      ####     #          ',
+    '         #####   ###    #######                #  # ###########  ###        ',
+    ' ########### # ## # ##   ####          ##### ###### ######################  ',
+    '  ############### #  #   ##    #      ## #################################  ',
+    ' #### ##########    #                ###  ########################### #     ',
+    '        #########   ###               # #########################    #      ',
+    '         ###############           # #############################          ',
+    '          ############ ##          ##############################           ',
+    '          ###########               ######  ## ################## #         ',
+    '          ##########              ##    # #### ############## #  #          ',
+    '          ##########                ##     ##################    #          ',
+    '           ########               ##### #  ################### #            ',
+    '            ###   #              ############# ##############               ',
+    '            ###    #             ########## ####  ############              ',
+    '              #                 ################   ###  ##                  ',
+    '               ##               ############ ##    ##   ###  #              ',
+    '                                #############       #     #                 ',
+    '                   ####          #############                #             ',
+    '                    #####             ########          ##  #               ',
+    '                   ######             #######            # ##               ',
+    '                   #########          ######                    ##          ',
+    '                   ##########          #####               #     #   #      ',
+    '                    ########           #####                                ',
+    '                    ########          ###### #                ### #         ',
+    '                     ######            ####  #               ######         ',
+    '                     #####             ####  #              ########        ',
+    '                     #####             ####                 ########        ',
+    '                     ####               ##                  ### ####        ',
+    '                     ###                                         ###        ',
+    '                    ###                                                     ',
+    '                    ##                                                      ',
+    '                    ##                                                      ',
+    '                    #  #                                                    ',
+    '                                                                            ',
+]
+LON0, LON1 = -170.0, 190.0      # the map's left and right edges, in degrees
+LAT0, LAT1 = 78.0, -58.0        # its top and bottom
+
+
+def project(lat, lon, x, y, w, h):
+    """Degrees to a point inside the map box."""
+    px = x + (lon - LON0) / (LON1 - LON0) * w
+    py = y + (LAT0 - lat) / (LAT0 - LAT1) * h
+    return px, py
+
+
 ICON = {
     "bridge": icon_bridge, "cyclone": icon_cyclone, "chart": icon_chart,
     "deal": icon_deal, "climate": icon_climate, "missile": icon_missile,
@@ -456,7 +505,9 @@ ICON = {
 
 # ---------------------------------------------------------------- stories ---
 # Every story below happened, or was first reported, on Friday 20 November 2026.
-# Fields: number, region, dateline, beat, headline, standfirst, sources, icon.
+# Fields: number, region, dateline, beat, headline, standfirst, sources, icon,
+# and how solid the story is: 2 = confirmed by several outlets or an official
+# body, 1 = one named outlet, 0 = a claim attributed to someone.
 LEADS = [
     (1, "Europe", "KYIV, UKRAINE", "WAR",
      "Russian missiles hit three Kyiv bridges",
@@ -587,7 +638,26 @@ def region_counts():
     return counts
 
 
+
+
+
+
+
+
+
+
+
 # ----------------------------------------------------------------- layout ---
+TIMELINE = [
+    ("00:00", "Kyiv bridges hit"),
+    ("02:00", "Akvan makes landfall"),
+    ("05:30", "Taipei closes \u22126.2%"),
+    ("05:50", "Missile lands in Poland"),
+    ("15:00", "COP31 runs past its close"),
+    ("18:30", "EU seals the reset deal"),
+    ("21:00", "S&P 500 closes in correction"),
+]
+
 STATS = [
     ("3", "Kyiv bridges damaged in the overnight barrage"),
     ("300,000+", "people evacuated before Akvan made landfall"),
@@ -649,6 +719,27 @@ def stat_strip(p, y):
     return y + ch + 8
 
 
+def timeline(p, y):
+    """The day on one clock, so the page has a spine in time."""
+    p.text(M, y, "THE DAY, IN UTC", p.font(SANS_B, 8.2), RED)
+    y += 12
+    n = len(TIMELINE)
+    gap = 8
+    cw = (W - 2 * M - gap * (n - 1)) / n
+    # the rail
+    p.rect([M, y + 5, W - M, y + 6.5], fill=FAINT)
+    for i, (clock, what) in enumerate(TIMELINE):
+        x = M + i * (cw + gap)
+        p.ellipse([x + 1, y + 1.5, x + 10, y + 10.5], fill=RED if i in (1, 4) else INK)
+        p.text(x + 14, y, clock, p.font(SANS_B, 7.6), INK)
+        f = p.font(SANS_R, 6.6)
+        ty = y + 10
+        for line in p.wrap(what, f, cw - 6)[:2]:
+            p.text(x, ty, line, f, INK2)
+            ty += 7.6
+    return y + 27
+
+
 def region_bar(p, y):
     """The seven regions, each with its colour and its story count."""
     counts = region_counts()
@@ -683,6 +774,7 @@ def lead(p, x, y, w, h, story):
     p.rect([x, y, x + iw, y + ih], fill="#EFE8D9")
     ICON[ic](p, x + iw * 0.06, y + ih * 0.08, iw * 0.88, ih * 0.84, color)
     p.text(x + 4, y + ih - 11, "Original drawing", p.font(SANS_R, 6.6), GREY)
+    trust_badge(p, x + iw - 52, y + 4, n)
     yy = y + ih + 7
     yy = kicker(p, x, yy, n, region, dateline, beat, color)
     f, lines = p.fit(head, SERIF_B, w, 2, 25, 13)
@@ -756,6 +848,36 @@ def date_check(p, x, y, w):
     return ty
 
 
+
+
+
+# How solid each story is, by its number: 2 confirmed by several outlets or an
+# official body, 1 a single named outlet, 0 a claim attributed to a person.
+TRUST = {
+    1: 2, 2: 2, 3: 2, 4: 2, 5: 2, 6: 2, 7: 2, 8: 2, 9: 2, 10: 0,
+    11: 1, 12: 2, 13: 2, 14: 2, 15: 2, 16: 1, 17: 2, 18: 2, 19: 2, 20: 1,
+    21: 1, 22: 2, 23: 2, 24: 2, 25: 2, 26: 0, 27: 2, 28: 2, 29: 2, 30: 1,
+    31: 2, 32: 1, 33: 1, 34: 2, 35: 2, 36: 1,
+}
+TRUST_LABEL = {2: "CONFIRMED", 1: "REPORTED", 0: "CLAIMED"}
+TRUST_COLOR = {2: "#2F7D4F", 1: "#B8791F", 0: "#8A8A8A"}
+
+# Where each story happened, for the map pins: latitude, longitude.
+PLACE = {
+    1: (50.4, 30.5), 2: (19.3, 84.9), 3: (25.0, 121.5), 4: (50.8, 4.4),
+    5: (36.9, 30.7), 6: (52.2, 21.0), 7: (41.9, 12.5), 8: (50.8, 4.4),
+    9: (32.9, 44.3), 10: (35.7, 51.4), 11: (33.3, 35.5), 12: (3.5, 39.0),
+    13: (3.1, 35.6), 14: (13.7, -89.2), 15: (-15.8, -47.9), 16: (19.4, -99.1),
+    17: (28.6, 77.2), 18: (37.6, 127.0), 19: (-6.2, 106.8), 20: (6.9, 79.9),
+    21: (47.9, 106.9), 22: (-35.3, 149.1), 23: (-41.3, 174.8), 24: (40.7, -74.0),
+    25: (38.9, -77.0), 26: (39.9, 116.4), 27: (46.2, 6.1), 28: (0.0, 0.0),
+    29: (0.0, 0.0), 30: (6.4, 2.4), 31: (-26.2, 28.0), 32: (2.0, 45.3),
+    33: (38.9, -77.0), 34: (22.5, 114.1), 35: (51.5, -0.1), 36: (12.8, 45.0),
+}
+# Voyager 1 and Perseverance are off the map: both are marked at deep space.
+OFFMAP = {28, 29}
+
+
 def build():
     p = Page()
     counts = region_counts()
@@ -764,12 +886,13 @@ def build():
     y = M
     y = masthead(p, y)
     y = stat_strip(p, y)
+    y = timeline(p, y)
     y = region_bar(p, y)
     y = section_bar(p, y, 2)
 
     # --- the three leads
     lead_top = y + 9
-    lead_h = 232
+    lead_h = 222
     gap = 16
     lw = (W - 2 * M - gap * 2) / 3
     for i, story in enumerate(LEADS):
@@ -785,7 +908,7 @@ def build():
     cols, rows_ = 5, 2
     cg = 11
     cw = (W - 2 * M - cg * (cols - 1)) / cols
-    chh = 148
+    chh = 138
     grid = CARDS[:cols * rows_]
     for i, story in enumerate(grid):
         c, r = i % cols, i // cols
@@ -812,28 +935,45 @@ def build():
 
 
 def draw_map(p, x, y, w, h):
-    """A small world map: the story regions in their colours."""
+    """The world as dots, with a numbered pin for every story on it."""
     p.text(x, y, "WHERE IT HAPPENED", p.font(SANS_B, 8.4), RED)
-    p.text(x, y + 12, "Each region, and how many of the day's stories it holds",
-           p.font(SANS_R, 6.6), GREY)
-    # a simple graticule with blocks standing for regions, in their colours
-    top = y + 26
-    bw = (w - 8 * 2) / 7
-    order = ["Americas", "Europe", "Africa", "Middle East", "Asia", "Oceania", "Global"]
-    counts = region_counts()
-    mx = max(counts.values())
-    for i, region in enumerate(order):
-        bh = max(4.0, (h - 40) * (counts.get(region, 0) / mx))
-        bx = x + i * bw + 4
-        p.rect([bx, top + (h - 46) - bh, bx + bw - 8, top + (h - 46)],
-               fill=REGION_COLOR[region])
-        p.text(bx + (bw - 8) / 2, top + (h - 46) - bh - 9,
-               str(counts.get(region, 0)), p.font(SANS_B, 7.4), INK, anchor="ma")
-    p.rect([x, top + (h - 46), x + w, top + (h - 46) + 1], fill=FAINT)
-    for i, region in enumerate(order):
-        f = p.font(SANS_R, 5.6)
-        lbl = region[:7].upper()
-        p.text(x + i * bw + 4 + (bw - 8) / 2, top + (h - 46) + 3, lbl, f, GREY, anchor="ma")
+    rows = len(WORLD)
+    cols = len(WORLD[0])
+    mh = h - 30
+    cw = w / cols
+    ch = mh / rows
+    dot = max(1.0, min(cw, ch) * 0.34)
+    for r, line in enumerate(WORLD):
+        for c, ch_ in enumerate(line):
+            if ch_ != "#":
+                continue
+            cx = x + (c + 0.5) * cw
+            cy = y + 20 + (r + 0.5) * ch
+            p.rect([cx - dot / 2, cy - dot / 2, cx + dot / 2, cy + dot / 2], fill="#D8D0BF")
+
+    # every story as a pin on its place
+    for n, (lat, lon) in PLACE.items():
+        if n in OFFMAP:
+            continue
+        px, py = project(lat, lon, x, y + 20, w, mh)
+        region = next(r for r in (LEADS + CARDS) if r[0] == n)[1]
+        col = REGION_COLOR[region]
+        p.ellipse([px - 3.4, py - 3.4, px + 3.4, py + 3.4], fill=col)
+        p.ellipse([px - 1.2, py - 1.2, px + 1.2, py + 1.2], fill=PAPER)
+    p.text(x, y + h - 8, "Each pin is a numbered story on this page; two are off it, in deep space",
+           p.font(SANS_R, 6.2), GREY)
+
+
+def trust_badge(p, x, y, n):
+    """A small stamp saying how solid the story is."""
+    level = TRUST.get(n, 1)
+    label = TRUST_LABEL[level]
+    col = TRUST_COLOR[level]
+    f = p.font(SANS_B, 5.8)
+    wd = p.tw(label, f) + 8
+    p.rrect([x, y, x + wd, y + 9], 1.5, fill=col)
+    p.text(x + 4, y + 2, label, f, PAPER)
+    return wd
 
 
 if __name__ == "__main__":

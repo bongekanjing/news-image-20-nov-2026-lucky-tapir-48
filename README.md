@@ -37,8 +37,14 @@ hospitalised, India and Japan deepening defence ties, South Korea's ruling party
 moving to impeach the chief justice, Australia and China agreeing AI talks,
 Wall Street in correction, Voyager 1 falling silent, and more.
 
-A **date check** at the foot says what was left out and why, so the one-day rule
-is visible rather than implied.
+Under the masthead, two strips give the day a spine: **the day in UTC**, a
+seven-stop chronology from the Kyiv bridges at 00:00 to the S&P 500 closing in
+correction, and **the day in numbers**, six figures worth stopping on. Every
+story carries a stamp saying how solid it is, **CONFIRMED** where several outlets
+or an official body have it, **REPORTED** where one named outlet does, **CLAIMED**
+where it is someone's assertion. A dotted world map pins each story where it
+happened, and a **date check** at the foot names what was left out and why, so the
+one-day rule is visible rather than implied.
 
 ## How it is made
 
@@ -78,7 +84,7 @@ python3 verify.py   # checks the layout against its own geometry
 | `main.ts` | The entry program: verifies and places `entry.png`. |
 | `draw.py` | Draws the page: layout, icons, story list. |
 | `verify.py` | Checks the drawn page's geometry. |
-| `entry.png` | The entry: 1024 x 1024, 428 KB. |
+| `entry.png` | The entry: 1024 x 1024, 451 KB. |
 | `LICENSE` | MIT. |
 
 ---
