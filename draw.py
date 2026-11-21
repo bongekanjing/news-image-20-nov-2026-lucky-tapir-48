@@ -16,9 +16,9 @@ M = 24                # page margin
 
 # ------------------------------------------------------------------ colour --
 PAPER = "#FBF8F1"
-INK = "#15130F"
-INK2 = "#46423A"
-GREY = "#837C6E"
+INK = "#000000"
+INK2 = "#2E2A24"
+GREY = "#6B6558"
 FAINT = "#C9C2B2"
 RED = "#C0392B"
 
@@ -679,7 +679,7 @@ def masthead(p, y):
     p.text(W - M, y + 1, "A VIEW OF THE WORLD'S NEWS", p.font(SANS_B, 9), GREY, anchor="ra")
     y += 16
 
-    f = p.font(SERIF_B, 62)
+    f = p.font(SERIF_B, 66)
     p.text(M, y, "Friday 20 November 2026", f, INK)
     y += 66
 
@@ -777,15 +777,15 @@ def lead(p, x, y, w, h, story):
     trust_badge(p, x + iw - 52, y + 4, n)
     yy = y + ih + 7
     yy = kicker(p, x, yy, n, region, dateline, beat, color)
-    f, lines = p.fit(head, SERIF_B, w, 2, 25, 13)
+    f, lines = p.fit(head, SERIF_B, w, 2, 30, 13)
     for line in lines:
         p.text(x, yy, line, f, INK)
         yy += f.size / S * 1.04
     yy += 2
-    f = p.font(SANS_R, 8.4)
-    for line in p.wrap(stand, f, w)[:5]:
+    f = p.font(SANS_R, 9.2)
+    for line in p.wrap(stand, f, w)[:4]:
         p.text(x, yy, line, f, INK2)
-        yy += 10.4
+        yy += 11.2
     p.text(x, y + h - 9, src, p.font(SANS_R, 6.8), GREY)
 
 
@@ -804,34 +804,34 @@ def card(p, x, y, w, h, story):
         p.text(x, yy, line, f, INK)
         yy += f.size / S * 1.02
     yy += 1
-    f = p.font(SANS_R, 7.0)
-    for line in p.wrap(stand, f, w)[:1]:
+    f = p.font(SANS_R, 7.8)
+    for line in p.wrap(stand, f, w)[:2]:
         p.text(x, yy, line, f, INK2)
-        yy += 8.4
+        yy += 9.2
 
 
-def briefs(p, x, y, w, rows, ncols=4):
+def briefs(p, x, y, w, rows, ncols=5):
     """The rest of the day, as numbered one-liners."""
     p.text(x, y, "ALSO ON FRIDAY 20 NOVEMBER", p.font(SANS_B, 9), RED)
     p.text(x, y + 13, f"{len(rows)} more stories, each dated that day", p.font(SANS_I, 7.6), GREY)
     y += 27
-    colw = (w - 12 * (ncols - 1)) / ncols
+    colw = (w - 9 * (ncols - 1)) / ncols
     per = (len(rows) + ncols - 1) // ncols
     for c in range(ncols):
-        cx = x + c * (colw + 12)
+        cx = x + c * (colw + 9)
         cy = y
         for story in rows[c * per:(c + 1) * per]:
             n, region, dateline, beat, head, stand, src, ic = story
             color = REGION_COLOR[region]
-            p.text(cx, cy, f"{n}", p.font(SANS_B, 6.8), color)
-            f = p.font(SANS_R, 6.6)
+            p.text(cx, cy, f"{n}", p.font(SANS_B, 7.4), color)
+            f = p.font(SANS_R, 7.2)
             lines = p.wrap(head, f, colw - 12)[:2]
             ty = cy
             for line in lines:
                 p.text(cx + 12, ty, line, f, INK)
-                ty += 7.8
+                ty += 8.2
             p.text(cx + 12, ty, src.split(",")[0], p.font(SANS_R, 5.8), GREY)
-            cy = ty + 8.4
+            cy = ty + 7.8
 
 
 def date_check(p, x, y, w):

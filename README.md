@@ -84,7 +84,7 @@ python3 verify.py   # checks the layout against its own geometry
 | `main.ts` | The entry program: verifies and places `entry.png`. |
 | `draw.py` | Draws the page: layout, icons, story list. |
 | `verify.py` | Checks the drawn page's geometry. |
-| `entry.png` | The entry: 1024 x 1024, 427 KB. |
+| `entry.png` | The entry: 1024 x 1024, 443 KB. |
 | `LICENSE` | MIT. |
 
 ---
