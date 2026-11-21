@@ -659,12 +659,12 @@ TIMELINE = [
 ]
 
 STATS = [
-    ("3", "Kyiv bridges damaged in the overnight barrage"),
-    ("300,000+", "people evacuated before Akvan made landfall"),
-    ("\u22126.2%", "Taiwan's index, its worst week since 1991"),
+    ("111", "missiles fired at Ukraine, with 400 drones"),
+    ("3", "Kyiv bridges damaged in the barrage"),
+    ("372,000", "people evacuated before Akvan landed"),
+    ("\u22126.2%", "Taiwan's index, worst week since 1991"),
     ("\u20ac1bn", "new EU military aid for Ukraine"),
-    ("700,000", "people displaced by fighting in southern Ethiopia"),
-    ("4,700", "humanitarian visas Mexico issued to Cubans"),
+    ("700,000", "displaced by fighting in southern Ethiopia"),
 ]
 
 
@@ -799,18 +799,18 @@ def card(p, x, y, w, h, story):
     ICON[ic](p, x + iw * 0.10, y + ih * 0.10, iw * 0.80, ih * 0.80, color)
     yy = y + ih + 5
     yy = kicker(p, x, yy, n, region, dateline, beat, color, size=6.6)
-    f, lines = p.fit(head, SERIF_B, w, 2, 16, 9.5)
+    f, lines = p.fit(head, SERIF_B, w, 2, 18, 11)
     for line in lines[:2]:
         p.text(x, yy, line, f, INK)
         yy += f.size / S * 1.02
     yy += 1
     f = p.font(SANS_R, 7.0)
-    for line in p.wrap(stand, f, w)[:2]:
+    for line in p.wrap(stand, f, w)[:1]:
         p.text(x, yy, line, f, INK2)
         yy += 8.4
 
 
-def briefs(p, x, y, w, rows, ncols=3):
+def briefs(p, x, y, w, rows, ncols=4):
     """The rest of the day, as numbered one-liners."""
     p.text(x, y, "ALSO ON FRIDAY 20 NOVEMBER", p.font(SANS_B, 9), RED)
     p.text(x, y + 13, f"{len(rows)} more stories, each dated that day", p.font(SANS_I, 7.6), GREY)
@@ -823,15 +823,15 @@ def briefs(p, x, y, w, rows, ncols=3):
         for story in rows[c * per:(c + 1) * per]:
             n, region, dateline, beat, head, stand, src, ic = story
             color = REGION_COLOR[region]
-            p.text(cx, cy, f"{n}", p.font(SANS_B, 7.6), color)
-            f = p.font(SANS_R, 7.2)
-            lines = p.wrap(head, f, colw - 13)[:2]
+            p.text(cx, cy, f"{n}", p.font(SANS_B, 6.8), color)
+            f = p.font(SANS_R, 6.6)
+            lines = p.wrap(head, f, colw - 12)[:2]
             ty = cy
             for line in lines:
-                p.text(cx + 13, ty, line, f, INK)
-                ty += 8.6
-            p.text(cx + 13, ty, src.split(",")[0], p.font(SANS_R, 6.4), GREY)
-            cy = ty + 9.6
+                p.text(cx + 12, ty, line, f, INK)
+                ty += 7.8
+            p.text(cx + 12, ty, src.split(",")[0], p.font(SANS_R, 5.8), GREY)
+            cy = ty + 8.4
 
 
 def date_check(p, x, y, w):
@@ -905,10 +905,10 @@ def build():
 
     # --- the ten cards, 5 x 2
     card_top = y + 9
-    cols, rows_ = 5, 2
+    cols, rows_ = 4, 2
     cg = 11
     cw = (W - 2 * M - cg * (cols - 1)) / cols
-    chh = 138
+    chh = 150
     grid = CARDS[:cols * rows_]
     for i, story in enumerate(grid):
         c, r = i % cols, i // cols
@@ -958,8 +958,9 @@ def draw_map(p, x, y, w, h):
         px, py = project(lat, lon, x, y + 20, w, mh)
         region = next(r for r in (LEADS + CARDS) if r[0] == n)[1]
         col = REGION_COLOR[region]
-        p.ellipse([px - 3.4, py - 3.4, px + 3.4, py + 3.4], fill=col)
-        p.ellipse([px - 1.2, py - 1.2, px + 1.2, py + 1.2], fill=PAPER)
+        p.ellipse([px - 4.2, py - 4.2, px + 4.2, py + 4.2], fill=col)
+        f = p.font(SANS_B, 4.6)
+        p.text(px, py - 2.6, str(n), f, PAPER, anchor="ma")
     p.text(x, y + h - 8, "Each pin is a numbered story on this page; two are off it, in deep space",
            p.font(SANS_R, 6.2), GREY)
 

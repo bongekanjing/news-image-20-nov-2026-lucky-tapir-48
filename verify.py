@@ -51,10 +51,10 @@ y = lead_bottom + 8
 y = d.section_bar(p, y, 2)
 
 card_top = y + 9
-cols, rows_ = 5, 2
+cols, rows_ = 4, 2
 cg = 11
 cw = (W - 2 * M - cg * (cols - 1)) / cols
-chh = 138
+chh = 150
 card_bottom = card_top + rows_ * chh + 10 * (rows_ - 1)
 y = card_bottom + 7
 y = d.section_bar(p, y, 2)

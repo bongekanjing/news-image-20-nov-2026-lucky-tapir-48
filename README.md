@@ -13,7 +13,7 @@ image" bounty, $250 in USDC.
 
 A masthead names the day at the largest type on the sheet. Under it, a strip of
 six numbers from the day, then the region key with each region's story count.
-Then three leads, ten cards, and twenty-three briefs, so the reader can stop at
+Then three leads, twelve cards, and twenty-one briefs, so the reader can stop at
 any depth: the date, the teasers, the leads, the headlines, the one-liners.
 
 The three leads:
@@ -84,7 +84,7 @@ python3 verify.py   # checks the layout against its own geometry
 | `main.ts` | The entry program: verifies and places `entry.png`. |
 | `draw.py` | Draws the page: layout, icons, story list. |
 | `verify.py` | Checks the drawn page's geometry. |
-| `entry.png` | The entry: 1024 x 1024, 451 KB. |
+| `entry.png` | The entry: 1024 x 1024, 427 KB. |
 | `LICENSE` | MIT. |
 
 ---
