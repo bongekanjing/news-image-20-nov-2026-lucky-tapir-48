@@ -4,24 +4,54 @@
 [![rank](https://make.fun/badge/news-image-20261120/bongekanjing/news-image-20-nov-2026-lucky-tapir-48/rank.svg)](https://make.fun/bounty/news-image-20261120/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=news-image-20261120)
 [![reward](https://make.fun/badge/news-image-20261120/bongekanjing/news-image-20-nov-2026-lucky-tapir-48/reward.svg)](https://make.fun/bounty/news-image-20261120?utm_source=github&utm_medium=readme&utm_campaign=news-image-20261120)
 
-One square image that sums up the world's news of Friday, 20 November 2026, for
-make.fun's "Sum up 20 November's world news in one image" bounty, $250 in USDC.
+A newspaper front page for Friday, 20 November 2026, in one square: 36 stories
+from 7 regions, every one of them dated that day, laid out the way a broadsheet
+sets its hierarchy. For make.fun's "Sum up 20 November's world news in one
+image" bounty, $250 in USDC.
 
-Six stories that broke, or ran, on that Friday, each carried by its own drawn
-icon and each tagged with its region, so the day's breadth shows at a glance:
+## What is on the page
 
-| Region | Story | What happened |
-| --- | --- | --- |
-| Europe | Missiles hit Poland | Two Russian missiles and a suspected drone came down on Polish soil during a major overnight bombardment of Ukraine; NATO called it a grave violation of airspace and Poland's prime minister an intentional provocation. |
-| Markets | Stocks in correction | US stocks slid into correction territory as an AI-driven selloff deepened, with the Nasdaq turning negative for the year. |
-| Climate | COP31 runs overtime | Talks in Antalya ran past their deadline, deadlocked over fossil fuels and climate finance, with the draft deal dropping references to fossil fuels. |
-| Asia | China nuclear buildup | A day after the Xi-Putin summit, Trump said China's nuclear buildup is "hot and heavy" and threatened penalties on AI data centres built abroad. |
-| Middle East | Iran: no deal | Trump insisted Iran would not make an "acceptable" deal, as concern grew about next steps and strikes on tankers were reported. |
-| Africa | 700,000 displaced | Around 700,000 people were displaced by conflict in southern Ethiopia. |
+A masthead names the day at the largest type on the sheet. Under it, a strip of
+six numbers from the day, then the region key with each region's story count.
+Then three leads, ten cards, and twenty-three briefs, so the reader can stop at
+any depth: the date, the teasers, the leads, the headlines, the one-liners.
 
-The image is 1024 x 1024 PNG, 86 KB, drawn entirely in code with no external
-assets: every icon, rule and letterform is drawn by `draw.py` from the system's
-Liberation faces. Redrawing it is deterministic, byte for byte.
+The three leads:
+
+1. **Russian missiles hit three Kyiv bridges.** An overnight barrage of 100-plus
+   missiles and about 400 drones killed at least eight people across Ukraine and
+   cut power and water in the capital.
+2. **Cyclone Akvan comes ashore in eastern India.** It crossed near Gopalpur
+   after more than 300,000 people were moved to shelters: the third severe
+   cyclone on that coast in a month.
+3. **An AI sell-off sinks Asia's markets.** Taiwan fell 6.2% for its worst week
+   since 1991; Seoul lost 5.2% and Tokyo 5.1%, with chipmakers leading.
+
+The rest of the day, across regions: the UK-EU reset deal, COP31 running past
+its deadline with fossil fuels struck from the draft, a Russian missile landing
+in Poland, Italy's general strike, the EU's \u20ac1bn in new military aid, Iraqi
+troops entering Jurf al-Sakhar, Trump on Iran and on China's nuclear buildup,
+Israeli strikes in southern Lebanon, 700,000 displaced in southern Ethiopia,
+Kenya's first production oil well, Bukele's third-term bid, Bolsonaro
+hospitalised, India and Japan deepening defence ties, South Korea's ruling party
+moving to impeach the chief justice, Australia and China agreeing AI talks,
+Wall Street in correction, Voyager 1 falling silent, and more.
+
+A **date check** at the foot says what was left out and why, so the one-day rule
+is visible rather than implied.
+
+## How it is made
+
+Drawn entirely in code with no external assets. `draw.py` composes the page from
+a story list and a set of flat vector icons, all shapes drawn by hand: a bridge,
+a cyclone, a chart, a trefoil, a derrick, a gavel, a cargo ship. Type is the
+system's Liberation Serif and Sans. The page is drawn at 2x and downsampled, so
+the small type stays clean at the size the judge reads it. Redrawing it is
+deterministic, byte for byte.
+
+`verify.py` checks the page geometrically, since a page that overflows a column
+is a page that reads as broken: every one of the 204 text lines against the
+margins and the band it belongs to, and every block against its own cell.
 
 ## Run it
 
@@ -37,7 +67,8 @@ refuse.
 To redraw the image from scratch:
 
 ```sh
-python3 draw.py    # writes entry.png beside it
+python3 draw.py     # writes entry.png beside it
+python3 verify.py   # checks the layout against its own geometry
 ```
 
 ## Files
@@ -45,8 +76,9 @@ python3 draw.py    # writes entry.png beside it
 | Path | What it is |
 | --- | --- |
 | `main.ts` | The entry program: verifies and places `entry.png`. |
-| `draw.py` | Draws the image. Standard library and Pillow only. |
-| `entry.png` | The entry: 1024 x 1024, 86 KB. |
+| `draw.py` | Draws the page: layout, icons, story list. |
+| `verify.py` | Checks the drawn page's geometry. |
+| `entry.png` | The entry: 1024 x 1024, 428 KB. |
 | `LICENSE` | MIT. |
 
 ---
